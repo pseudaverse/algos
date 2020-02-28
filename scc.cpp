@@ -21,7 +21,7 @@ void dfs_inv(int u) {
 		dfs_inv(v);
 	}
 }
-
+// 1-Индексация
 void scc_go() {
 	for (int i = 0; i < m; i++) {
 		int a = edges[i].X, b = edges[i].Y;
