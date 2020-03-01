@@ -1,81 +1,64 @@
 struct segtree {
-	//  меняем
+	// 4Head
 	struct node {
-		node(ll x): val_mn(x), val_mx(x) {};
-		node(ll mn, ll mx) : val_mn(mn), val_mx(mx) {};
-		node() : val_mn(INT_MAX), val_mx(INT_MIN) {};
-		ll val_mn = INT_MAX;
-		ll val_mx = INT_MIN;
+		node(ll x) : val_mx(x) {};
+		node() : val_mx(LLONG_MIN) {};
+		ll val_mx = LLONG_MIN;
 		ll lazy = 0;
-		bool is_lazy = 0;
 		void apply(int tl, int tr, ll add) {
-			//val += (tr - tl + 1) * add;
-			val_mn = add;
-			val_mx = add;
-			lazy = add;
-			is_lazy = 1;
+			val_mx += add;
+			lazy += add;
 		}
 	};
-	node neutral;
 	node merge(const node& a, const node& b) const {
-		return node(min(a.val_mn, b.val_mn), max(a.val_mx, b.val_mx));
-		//return node(a.val + b.val);
+		return node(max(a.val_mx, b.val_mx));
 	}
-	// дальше не трогай
 	void push(int u, int tl, int tr) {
-		if (t[u].is_lazy) {
-			int tm = (tl + tr) / 2;
-			if (tl != tr) {
-				t[u * 2].apply(tl, tm, t[u].lazy);
-				t[u * 2 + 1].apply(tm + 1, tr, t[u].lazy);
-			}
-			t[u].is_lazy = 0;
-		}
+		t[u * 2].apply(1, 1, t[u].lazy);
+		t[u * 2 + 1].apply(1, 1, t[u].lazy);
+		t[u].lazy = 0;
 	}
+	// 4Head
 	node get(int u, int tl, int tr, int l, int r) {
-		if (r < l || tr < tl || tl > r || tr < l) {
+		if (r < l || tl > r || tr < l) {
 			return neutral;
 		}
-		push(u, tl, tr);
 		if (l <= tl && tr <= r) {
 			return t[u];
 		} else {
+			push(u, tl, tr);
 			int tm = (tl + tr) / 2;
 			return merge(get(u * 2, tl, tm, l, r), get(u * 2 + 1, tm + 1, tr, l, r));
 		}
 	}
 	template<typename... M>
 	void upd(int u, int tl, int tr, int l, int r, const M&... m) {
-		if (r < l || tr < tl || tl > r || tr < l) {
+		if (r < l || tl > r || tr < l) {
 			return;
 		}
-		push(u, tl, tr);
 		if (l <= tl && tr <= r) {
 			t[u].apply(tl, tr, m...);
 		} else {
+			push(u, tl, tr);
 			int tm = (tl + tr) / 2;
 			upd(u * 2, tl, tm, l, r, m...);
 			upd(u * 2 + 1, tm + 1, tr, l, r, m...);
 			t[u] = merge(t[u * 2], t[u * 2 + 1]);
 		}
 	}
- 
 	template<class T>
 	void build(int u, int tl, int tr, vector<T>& v) {
 		if (tl == tr) {
 			node tmp(v[tl]);
 			t[u] = tmp;
-		}
-		else {
+		} else {
 			int tm = (tl + tr) / 2;
 			build(u * 2, tl, tm, v);
 			build(u * 2 + 1, tm + 1, tr, v);
 			t[u] = merge(t[u * 2], t[u * 2 + 1]);
 		}
 	}
- 
-	template<class T>
-	segtree(T n) : n(n) {
+	segtree(ll n) : n(n) {
 		t.resize(4 * n);
 	}
 	template<class T>
@@ -90,7 +73,7 @@ struct segtree {
 	void upd(int l, int r, const M&... m) {
 		upd(1, 0, n - 1, l, r, m...);
 	}
- 
 	int n;
 	vector<node>t;
+	node neutral;
 };
