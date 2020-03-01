@@ -75,10 +75,8 @@ struct segtree {
 	}
  
 	template<class T>
-	segtree(int n) : n(n) {
+	segtree(T n) : n(n) {
 		t.resize(4 * n);
-		vector<T> v(n, neutral);
-		build(1, 0, n - 1, v);
 	}
 	template<class T>
 	segtree(vector<T>& v) : n(v.size()) {
