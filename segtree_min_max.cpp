@@ -2,21 +2,23 @@ struct segtree {
 	// 4Head
 	struct node {
 		node(ll x) : val_mx(x) {};
-		node() : val_mx(LLONG_MIN) {};
-		ll val_mx = LLONG_MIN;
-		ll lazy = 0;
+		node() : val_mx(LLONG_MIN) {}; // neutral
+		ll val_mx = LLONG_MIN; // neutral
+		ll lazy = -1;
 		void apply(int tl, int tr, ll add) {
-			val_mx += add;
-			lazy += add;
+			val_mx += add; // = add
+			lazy += add; // = add
 		}
 	};
+	void push(int u, int tl, int tr) {
+		if(t[u].lazy != -1) {
+			t[u * 2].apply(1, 1, t[u].lazy);
+			t[u * 2 + 1].apply(1, 1, t[u].lazy);
+			t[u].lazy = -1;
+		}
+	}
 	node merge(const node& a, const node& b) const {
 		return node(max(a.val_mx, b.val_mx));
-	}
-	void push(int u, int tl, int tr) {
-		t[u * 2].apply(1, 1, t[u].lazy);
-		t[u * 2 + 1].apply(1, 1, t[u].lazy);
-		t[u].lazy = 0;
 	}
 	// 4Head
 	node get(int u, int tl, int tr, int l, int r) {
