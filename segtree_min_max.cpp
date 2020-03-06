@@ -11,9 +11,10 @@ struct segtree {
 		}
 	};
 	void push(int u, int tl, int tr) {
-		if(t[u].lazy != -1) {
-			t[u * 2].apply(1, 1, t[u].lazy);
-			t[u * 2 + 1].apply(1, 1, t[u].lazy);
+		if (t[u].lazy != -1) {
+			int tm = (tl + tr) / 2;
+			t[u * 2].apply(tl, tm, t[u].lazy);
+			t[u * 2 + 1].apply(tm + 1, tr, t[u].lazy);
 			t[u].lazy = -1;
 		}
 	}
