@@ -61,8 +61,19 @@ struct segtree {
 			t[u] = merge(t[u * 2], t[u * 2 + 1]);
 		}
 	}
+	void casual_build(int u, int tl, int tr) {
+		if (tl == tr) {
+			return;
+		} else {
+			int tm = (tl + tr) / 2;
+			casual_build(u * 2, tl, tm);
+			casual_build(u * 2 + 1, tm + 1, tr);
+			t[u] = merge(t[u * 2], t[u * 2 + 1]);
+		}
+	}
 	segtree(ll n) : n(n) {
 		t.resize(4 * n);
+		casual_build(1, 0, n - 1);
 	}
 	template<class T>
 	segtree(vector<T>& v) : n(v.size()) {
