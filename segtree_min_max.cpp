@@ -4,18 +4,18 @@ struct segtree {
 		node(ll x) : val_mx(x) {};
 		node() : val_mx(LLONG_MIN) {}; // neutral
 		ll val_mx = LLONG_MIN; // neutral
-		ll lazy = -1;
+		ll lazy = 0; // -1
 		void apply(int tl, int tr, ll add) {
 			val_mx += add; // = add
 			lazy += add; // = add
 		}
 	};
 	void push(int u, int tl, int tr) {
-		if (t[u].lazy != -1) {
+		if (t[u].lazy != 0 /*-1*/) {
 			int tm = (tl + tr) / 2;
 			t[u * 2].apply(tl, tm, t[u].lazy);
 			t[u * 2 + 1].apply(tm + 1, tr, t[u].lazy);
-			t[u].lazy = -1;
+			t[u].lazy = 0; //-1
 		}
 	}
 	node merge(const node& a, const node& b) const {
