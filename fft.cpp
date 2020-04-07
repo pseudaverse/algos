@@ -1,3 +1,4 @@
+// с отрицательными коэффами :(((((
 namespace fft {
 	typedef double dbl;
  
